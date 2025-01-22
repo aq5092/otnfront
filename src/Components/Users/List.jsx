@@ -47,7 +47,7 @@ function ListUsers() {
   return (
     <div>
       <h1>Javobgarlar</h1>
-      <Link to={'/userc'} className="btn btn-success">  +Add user</Link>
+      <Link to={'/userc/'} className="btn btn-success">  Create user</Link>
       
       <Link to={'/'} className="btn btn-primary"> Home</Link>
 

@@ -8,7 +8,7 @@ function Home() {
       <h1>
         Example heading
         </h1>
-        <Link to={`/users`} className="btn btn-outline-primary">+ User</Link>
+        <Link to={`/users/`} className="btn btn-outline-primary">Show user</Link>
 
     </div>
 

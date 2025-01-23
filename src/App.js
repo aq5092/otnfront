@@ -3,6 +3,7 @@ import './App.css';
 import Home from './Components/Home';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListUsers from './Components/Users/List';
+import CreateUser from './Components/Users/Create';
 function App() {
   return (
     
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<ListUsers />} />
+        <Route path="/userc" element={<CreateUser />} />
       </Routes>
     </BrowserRouter>
     

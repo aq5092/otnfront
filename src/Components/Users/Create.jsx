@@ -12,7 +12,7 @@ function CreateUser() {
     const handlesubmit= (event)=>{
         event.preventDefault();
         axios
-        .post(`${URL_USERS}`, values, {referrerPolicy: "unsafe-url",
+        .post(`${URL_USERS}`+ 'users/', values, {referrerPolicy: "unsafe-url",
             "Content-Type": "application/json",           
            })
         .then((response) => {

@@ -23,6 +23,7 @@ function CreateUser() {
     
           const data = await response.json();
           console.log("Response from server:", data);
+          navigate('/users')
         } catch (error) {
           console.error("Error:", error);
         }
@@ -52,7 +53,9 @@ function CreateUser() {
                 <label htmlFor="password">Password: </label>
                 <input type="text" name='password' value={item.name} onChange={handleChange} />
             </div>
-            <button type="submit" >Submit</button>
+            <Button type="submit" variant="outline-danger" >Submit</Button>
+            
+            
             <Link to="/users" className='btn btn-info'>Back</Link>
         </form>
         </div>

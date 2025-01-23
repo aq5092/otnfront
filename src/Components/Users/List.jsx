@@ -26,7 +26,7 @@ function ListUsers() {
   const onDelete = (id) => {
     const confirm  = window.confirm("Would you like to DELETE")
     if(confirm){
-      axios.delete(`${URL_USERS}`+ id+'/')
+      axios.delete(`${URL_USERS}`+ 'userd/'+ id+'/')
       .then(res=>{
         // navigator("/users")
         window.location.reload();
@@ -54,7 +54,7 @@ function ListUsers() {
         <thead>
           <tr>
             <th>#</th>
-            <th>Ismi</th>
+            <th>Username</th>
             <th>Email</th>
             <th>Read</th>
             <th>Edit</th>

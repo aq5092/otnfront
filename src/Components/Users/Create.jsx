@@ -31,7 +31,7 @@ function CreateUser() {
         <form onSubmit={handlesubmit}>
             <div className='mb-2'>
                 <label htmlFor="name">Username: </label>
-                <input type="text" name='ismi' onChange={e=>setValues({...values, ismi: e.target.value})}/>
+                <input type="text" name='ismi' onChange={e=>setValues({...values, username: e.target.value})}/>
             </div>
             
             <div className='mb-2'>

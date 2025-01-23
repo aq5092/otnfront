@@ -8,7 +8,7 @@ function ListUsers() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.get(`${URL_USERS}`,
+    axios.get(`${URL_USERS}/users`,
         {
           "Content-Type": "application/json",
           

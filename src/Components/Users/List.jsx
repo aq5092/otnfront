@@ -67,7 +67,7 @@ function ListUsers() {
               <td>{index}</td>
               <td key={index}>{item.username} </td>
               <td>{item.email}</td>
-              <td><Link to={`/userr/${item.id}`} className="btn btn-outline-primary">Read</Link></td>
+              <td><Link to={`/users/${item.id}`} className="btn btn-outline-primary">Read</Link></td>
               <td>
                 <Link to={`/useru/${item.id}`} className="btn btn-outline-success">Update</Link>
               </td>

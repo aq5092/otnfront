@@ -32,21 +32,7 @@ function CreateUser() {
         const { name, value } = e.target;
         setItem({ ...item, [name]: value });
       };
-    
-
-
-    // const handlesubmit= (event)=>{
-    //     event.preventDefault();
-    //     axios
-    //     .post(`${URL_USERS}`+ 'userc/', values)
-    //     .then((response) => {
-    //       console.log(response.data);
-    //       navigate('/users')
-    //     })
-    //     .catch((error) => {
-    //       console.log("error", error);
-    //     });
-    // }
+        
     return (
         <>
         <div className="d-flex w-100 vh-100 justify-content-center align-items-center bg-light ">
@@ -66,7 +52,7 @@ function CreateUser() {
                 <label htmlFor="password">Password: </label>
                 <input type="text" name='password' value={item.name} onChange={handleChange} />
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" >Submit</button>
             <Link to="/users" className='btn btn-info'>Back</Link>
         </form>
         </div>

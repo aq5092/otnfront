@@ -10,6 +10,7 @@ const Sidebar = () => {
         <Nav.Link href="#analytics">Analytics</Nav.Link>
         <Nav.Link href="#settings">Settings</Nav.Link>
         <Nav.Link href="/tasks">Topshiriq</Nav.Link>
+        
         <Nav.Link href="/users">Users</Nav.Link>
         
         

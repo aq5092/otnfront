@@ -4,9 +4,13 @@ import Home from './Components/Home';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListUsers from './Components/Users/List';
 import CreateUser from './Components/Users/Create';
-import Tasks from './Components/Task/Tasks';
+
 import Read from './Components/Users/Read';
 import Update from './Components/Users/Update';
+import CreateTask from './Components/Task/CreateTask';
+import ListTasks from './Components/Task/ListTask';
+import ReadTask from './Components/Task/ReadTask';
+import UpdateTask from './Components/Task/UpdateTask';
 function App() {
   return (
     
@@ -17,7 +21,10 @@ function App() {
         <Route path="/users/:id" element={<Read />} />
         <Route path="/useru/:id" element={<Update />} />
         <Route path="/userc" element={<CreateUser />} />
-        <Route path="/tasks" element={<Tasks />} />
+        <Route path="/taskc" element={<CreateTask/>}/>
+        <Route path="/tasks" element={<ListTasks/>}/>
+        <Route path="/tasks/:id" element={<ReadTask />} />
+        <Route path="/tasku/:id" element={<UpdateTask/>}/>
 
       </Routes>
     </BrowserRouter>

@@ -54,8 +54,17 @@ function ListTasks() {
         <thead>
           <tr>
             <th>#</th>
-            <th>Topshiriq nomi</th>
-            
+            <th>User</th>
+            <th>Topshiriq turi</th>
+            <th>Asos</th>
+            <th>Buyruq raqami</th>
+            <th>Sana</th>
+            <th>Mazmuni</th>
+            <th>Xodimlar soni</th>
+            <th>Status</th>
+            <th>Izoh</th>
+            <th>Link</th>
+            <th>Link_kimda</th>
             <th>Read</th>
             <th>Edit</th>
             <th>Delete</th>
@@ -65,7 +74,17 @@ function ListTasks() {
           {items.map((item, index) => (
             <tr key={index}>
               <td>{index}</td>
-              <td key={index}>{item.task_name} </td>
+              <td key={index}>user </td>
+              <td key={index}>{item.turi} </td>
+              <td key={index}>{item.asos} </td>
+              <td key={index}>{item.buyruq} </td>
+              <td key={index}>{item.created_at} </td>
+              <td key={index}>{item.mazmuni} </td>
+              <td key={index}>{item.xodim_soni} </td>
+              <td key={index}>{item.status} </td>
+              <td key={index}>{item.izoh} </td>
+              <td key={index}>{item.link} </td>
+              <td key={index}>{item.link_kimda} </td>
               
               <td><Link to={`/tasks/${item.id}`} className="btn btn-outline-primary">Read</Link></td>
               <td>

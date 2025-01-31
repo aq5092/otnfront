@@ -10,13 +10,19 @@ import {
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { URL_USERS } from "../Path";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function CreateTask() {
-  const [inputValue, setInputValue] = useState("");
-  const [selectedValue, setSelectedValue] = useState("");
-
   //  ############################################################
   const [users, setUsers] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setItem({ ...item, created_at: date });
+    console.log("Selected DateTime:", date);
+  };
 
   useEffect(() => {
     axios
@@ -32,19 +38,15 @@ function CreateTask() {
       });
   }, []);
 
-  const options = ["Option 1", "Option 2", "Option 3", "Option 4"];
-
-  const handleSelect = (value) => {
-    setInputValue(value);
-    setSelectedValue(value);
-  };
   const list_status = ["Jarayonda", "Tugatildi", "Toxtatildi"];
+  const list_topshriq = ["Buyruq", "Xizmat xati", "Rahbar topshirigi", "Ish rejimi", "Kunlik reja"];
+  
   const [item, setItem] = useState({
     turi: "",
     asos: "",
     buyruq: "",
     created_at: "",
-    updated_at: "",
+    // updated_at: "",
     mazmuni: "",
     xodim_soni: "",
     status: "",
@@ -53,7 +55,7 @@ function CreateTask() {
     link_kimda: "",
     owner_id: "",
   });
-  const id =1;
+  const id = item.owner_id;
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,9 +67,8 @@ function CreateTask() {
         },
         body: JSON.stringify(item),
       });
-
       const data = await response.json();
-      console.log("Response from server:", data);
+      // console.log("Response from server:", data);
       navigate("/tasks");
     } catch (error) {
       console.error("Error:", error);
@@ -77,6 +78,8 @@ function CreateTask() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setItem({ ...item, [name]: value });
+    // setUsers({...users,[name]: value});
+    // console.log(item)
   };
 
   return (
@@ -86,24 +89,6 @@ function CreateTask() {
           <h1>New task</h1>
           <form onSubmit={handleSubmit}>
             <Table striped bordered hover>
-              {/* <thead>
-                <tr>
-                  <th>#</th>
-                  <th>User</th>
-                  <th>Topshiriq turi</th>
-                  <th>Asos</th>
-                  <th>Buyruq raqami</th>
-                  <th>Sana</th>
-                  </tr>
-                  <tr>
-                  <th>Mazmuni</th>
-                  <th>Xodimlar soni</th>
-                  <th>Status</th>
-                  <th>Izoh</th>
-                  <th>Link</th>
-                  <th>Link_kimda</th>
-                </tr>
-              </thead> */}
               <tbody>
                 <tr>
                   <th>User</th>
@@ -113,51 +98,49 @@ function CreateTask() {
                   <th>Sana</th>
                 </tr>
                 <tr>
-                  
                   <td>
-                    <div
-                      style={{
-                        maxWidth: "300px",
-                        margin: "0 auto",
-                        padding: "20px",
-                      }}
-                    >
-                      <input
-                      type="text"
-                      name="owner_id"
-                      value={inputValue}
+                    <Form.Select
+                      aria-label="Default select example"
                       onChange={handleChange}
-                    />
-                      {/* <Form.Control
-                        type="text"
-                        placeholder="Select or type..."
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                      /> */}
-                      <DropdownButton
-                        id="dropdown-basic-button"
-                        title="Users"
-                        className="mt-8"
-                        onSelect={handleSelect}
-                      >
-                        {users.map((option, index) => (
-                          <Dropdown.Item key={index} eventKey={option.id}>
-                            {option.username}
-                          </Dropdown.Item>
-                        ))}
-                      </DropdownButton>
-                      {/* {selectedValue && (
-                        <p className="mt-3">Selected: {selectedValue}</p>
-                      )} */}
-                    </div>
+                      name="owner_id"
+                    >
+                      <option>Select user</option>
+                      {users.map((user, index) => (
+                        <option
+                          key={index}
+                          name="owner_id"
+                          value={user.id}
+                          onChange={handleChange}
+                        >
+                          {user.username}
+                        </option>
+                      ))}
+                    </Form.Select>
                   </td>
                   <td>
-                    <input
+                  <Form.Select
+                      aria-label="Default select example"
+                      onChange={handleChange}
+                      name="turi"
+                    >
+                      <option>Select user</option>
+                      {list_topshriq.map((val, index) => (
+                        <option
+                          key={index}
+                          name="turi"
+                          value={val}
+                          onChange={handleChange}
+                        >
+                          {val}
+                        </option>
+                      ))}
+                    </Form.Select>
+                    {/* <input
                       type="text"
                       name="turi"
                       value={item.turi}
                       onChange={handleChange}
-                    />
+                    /> */}
                   </td>
                   <td>
                     <input
@@ -177,16 +160,31 @@ function CreateTask() {
                     />
                   </td>
                   <td>
-                    <input
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={(date) => handleDateChange(date)}
+                      name="created_at"
+                      showTimeSelect
+                      timeFormat="HH:mm"
+                      timeIntervals={15}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                      className="border rounded p-2"
+                    />
+                   
+
+                    {/* <input
+                      
                       type="text"
                       name="created_at"
                       value={item.created_at}
                       onChange={handleChange}
-                    />
+                    /> */}
                   </td>
                 </tr>
+                <br/>
+                <br/>
                 <tr>
-                  <th>Update sana</th>
+                  {/* <th>Update sana</th> */}
                   <th>Mazmuni</th>
                   <th>Xodimlar soni</th>
                   <th>Status</th>
@@ -195,14 +193,14 @@ function CreateTask() {
                   <th>Link_kimda</th>
                 </tr>
                 <tr>
-                  <td>
+                  {/* <td>
                     <input
                       type="text"
                       name="updated_at"
                       value={item.updated_at}
                       onChange={handleChange}
                     />
-                  </td>
+                  </td> */}
                   <td>
                     <input
                       type="text"
@@ -221,13 +219,31 @@ function CreateTask() {
                   </td>
 
                   <td>
-                    <input
+                    <Form.Select
+                      aria-label="Default select example"
+                      onChange={handleChange}
+                      name="status"
+                    >
+                      <option>Select status</option>
+                      {list_status.map((status, index) => (
+                        <option
+                          key={index}
+                          name="status"
+                          value={status}
+                          onChange={handleChange}
+                        >
+                          {status}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </td>
+                  {/* <input
                       type="text"
                       name="status"
                       value={item.status}
                       onChange={handleChange}
-                    />
-                  </td>
+                    /> */}
+                  {/* </td> */}
                   <td>
                     <input
                       type="text"

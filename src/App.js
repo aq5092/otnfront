@@ -11,12 +11,14 @@ import CreateTask from './Components/Task/CreateTask';
 import ListTasks from './Components/Task/ListTask';
 import ReadTask from './Components/Task/ReadTask';
 import UpdateTask from './Components/Task/UpdateTask';
+import Login from './Components/Login';
 function App() {
   return (
     
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/users" element={<ListUsers />} />
         <Route path="/users/:id" element={<Read />} />
         <Route path="/useru/:id" element={<Update />} />

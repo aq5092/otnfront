@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Table,
-  Modal,
-  Form,
-  Dropdown,
-  DropdownButton,
-} from "react-bootstrap";
+import { Button, Table, Form } from "react-bootstrap";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { URL_USERS } from "../Path";
@@ -17,6 +10,9 @@ function CreateTask() {
   //  ############################################################
   const [users, setUsers] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [firstSelect, setFirstSelect] = useState(""); // State for first dropdown
+  const [secondOptions, setSecondOptions] = useState([]); // Options for second dropdown
+  const [secondSelect, setSecondSelect] = useState(""); // State for second dropdown
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -39,16 +35,55 @@ function CreateTask() {
   }, []);
 
   const list_status = ["Jarayonda", "Tugatildi", "Toxtatildi"];
-  const list_topshriq = ["Buyruq", "Xizmat xati", "Rahbar topshirigi", "Ish rejimi", "Kunlik reja"];
-  
+  const data = {
+    Rahbar_topshirigi: [
+      "Avtosanoat",
+      "Mukofotlash",
+      "Nizom",
+      "Shtat jadvali",
+      "Tashkiliy (Структура) tuzilma",
+    ],
+    Xizmat_xati: [
+      "Boshqa ishga o'tkazish",
+      "Kategoriya oshirish",
+      "Tushlik puli",
+      "Ustama bekor qilish",
+      "Ustama belgilash",
+      "Vakantlarni o‘chirish",
+    ],
+    Buyruq: [
+      "Boshqa ishga o'tkazish",
+      "Kategoriya oshirish",
+      "Korxona shtat jadvali",
+      "Ustama bekor qilish",
+      "Ustama belgilash",
+      "KPI (Korxona)",
+      "KPI (Tarmoqlar)",
+      "Mukofotlash",
+      "Nizom",
+      "Rotatsiya",
+      "Shtat jadvali",
+      "Tashkiliy (Структура) tuzilma",
+      "Vakantlarni o‘chirish",
+    ],
+    Ish_rejimi: [
+      "Dam olish kuni grafigi",
+      "Dam olish kuni haqidagi buyruq",
+      "Dam olish kuni ish tashkil qilish haqida",
+      "Ish kuni grafigi",
+      "Ish rejimini o`zgartirish haqida",
+      "Yillik 4 komandalik ish grafigi",
+      "Yillik ish taqvimi (kalendar)",
+    ],
+  };
+
   const [item, setItem] = useState({
     turi: "",
     asos: "",
     buyruq: "",
     created_at: "",
-    // updated_at: "",
     mazmuni: "",
-    xodim_soni: "",
+    xodim_soni: 0,
     status: "",
     izoh: "",
     link: "",
@@ -68,7 +103,7 @@ function CreateTask() {
         body: JSON.stringify(item),
       });
       const data = await response.json();
-      // console.log("Response from server:", data);
+      console.log("Response from server:", data);
       navigate("/tasks");
     } catch (error) {
       console.error("Error:", error);
@@ -80,6 +115,17 @@ function CreateTask() {
     setItem({ ...item, [name]: value });
     // setUsers({...users,[name]: value});
     // console.log(item)
+  };
+  const handleFirstSelectChange = (e) => {
+    const selectedValue = e.target.value;
+    setFirstSelect(selectedValue);
+    setSecondOptions(data[selectedValue] || []); // Update second dropdown options
+    setSecondSelect(""); // Reset the second dropdown
+    setItem({ ...item, turi: selectedValue });
+  };
+  const handleSecondSelectChange = (e) => {
+    setSecondSelect(e.target.value);
+    setItem({ ...item, mazmuni: e.target.value });
   };
 
   return (
@@ -118,29 +164,21 @@ function CreateTask() {
                     </Form.Select>
                   </td>
                   <td>
-                  <Form.Select
-                      aria-label="Default select example"
-                      onChange={handleChange}
+                    <select
                       name="turi"
+                      value={firstSelect}
+                      onChange={handleFirstSelectChange}
+                      className="border p-2 rounded mb-4 w-full"
                     >
-                      <option>Select user</option>
-                      {list_topshriq.map((val, index) => (
-                        <option
-                          key={index}
-                          name="turi"
-                          value={val}
-                          onChange={handleChange}
-                        >
-                          {val}
+                      <option value="">
+                        -- Quyidagilardan birini tanlang --
+                      </option>
+                      {Object.keys(data).map((key) => (
+                        <option key={key} value={key}>
+                          {key}
                         </option>
                       ))}
-                    </Form.Select>
-                    {/* <input
-                      type="text"
-                      name="turi"
-                      value={item.turi}
-                      onChange={handleChange}
-                    /> */}
+                    </select>
                   </td>
                   <td>
                     <input
@@ -170,21 +208,11 @@ function CreateTask() {
                       dateFormat="MMMM d, yyyy h:mm aa"
                       className="border rounded p-2"
                     />
-                   
-
-                    {/* <input
-                      
-                      type="text"
-                      name="created_at"
-                      value={item.created_at}
-                      onChange={handleChange}
-                    /> */}
                   </td>
                 </tr>
-                <br/>
-                <br/>
+                <br />
+                <br />
                 <tr>
-                  {/* <th>Update sana</th> */}
                   <th>Mazmuni</th>
                   <th>Xodimlar soni</th>
                   <th>Status</th>
@@ -193,21 +221,23 @@ function CreateTask() {
                   <th>Link_kimda</th>
                 </tr>
                 <tr>
-                  {/* <td>
-                    <input
-                      type="text"
-                      name="updated_at"
-                      value={item.updated_at}
-                      onChange={handleChange}
-                    />
-                  </td> */}
                   <td>
-                    <input
-                      type="text"
+                    <select
                       name="mazmuni"
-                      value={item.mazmuni}
-                      onChange={handleChange}
-                    />
+                      value={secondSelect}
+                      onChange={handleSecondSelectChange}
+                      className="border p-2 rounded w-full"
+                      disabled={!firstSelect} // Disable if no selection in first dropdown
+                    >
+                      <option value="">
+                        -- Quyidagilardan birini tanlang --
+                      </option>
+                      {secondOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td>
                     <input
@@ -237,13 +267,7 @@ function CreateTask() {
                       ))}
                     </Form.Select>
                   </td>
-                  {/* <input
-                      type="text"
-                      name="status"
-                      value={item.status}
-                      onChange={handleChange}
-                    /> */}
-                  {/* </td> */}
+
                   <td>
                     <input
                       type="text"
@@ -272,123 +296,7 @@ function CreateTask() {
                 </tr>
               </tbody>
             </Table>
-            {/* <div className="mb-2">
-              <label htmlFor="turi">Topshiriq turi: </label>
-              <input
-                type="text"
-                name="turi"
-                value={item.turi}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="asos">Asos: </label>
-              <input
-                type="text"
-                name="asos"
-                value={item.asos}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="buyruq">Buyruq: </label>
-              <input
-                type="text"
-                name="buyruq"
-                value={item.buyruq}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="created_at">Sana: </label>
 
-              <input
-                type="text"
-                name="created_at"
-                value={item.created_at}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="updated_at">Updata sana: </label>
-              <input
-                type="text"
-                name="updated_at"
-                value={item.updated_at}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="mazmuni">Mazmuni: </label>
-              <input
-                type="text"
-                name="mazmuni"
-                value={item.mazmuni}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="mb-2">
-              <label htmlFor="xodim_soni">Xodim soni: </label>
-              <input
-                type="text"
-                name="xodim_soni"
-                value={item.xodim_soni}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="status">Status: </label> */}
-            {/* <DropdownButton className='mt-2' value={item.status} onChange={handleChange}>
-                {list_status.map((option, index) => (
-          <Dropdown.Item  eventKey={option}>
-            {option}
-          </Dropdown.Item>
-        ))}
-                </DropdownButton> */}
-            {/* <input
-                type="text"
-                name="status"
-                value={item.status}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="izoh">Izoh: </label>
-              <input
-                type="text"
-                name="izoh"
-                value={item.izoh}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="link">Link: </label>
-              <input
-                type="text"
-                name="link"
-                value={item.link}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="link_kimda">Link kimda: </label>
-              <input
-                type="text"
-                name="link_kimda"
-                value={item.link_kimda}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="owner_id">User id: </label>
-              <input
-                type="text"
-                name="owner_id"
-                value={item.owner_id}
-                onChange={handleChange}
-              />
-            </div> */}
             <Button type="submit" variant="outline-danger">
               Submit
             </Button>

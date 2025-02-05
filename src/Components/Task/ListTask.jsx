@@ -6,6 +6,20 @@ import { Link } from "react-router-dom";
 
 function ListTasks() {
   const [items, setItems] = useState([]);
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${URL_USERS}` + "users/", {
+        "Content-Type": "application/json",
+      })
+      .then((response) => {
+        setUsers(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  }, []);
 
   useEffect(() => {
     axios.get(`${URL_USERS}`+ 'tasks/',

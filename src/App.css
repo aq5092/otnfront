@@ -15,6 +15,9 @@
   color: honeydew;
   
 }
+.updatetask{
+  background-image: linear-gradient(to right, rgb(106, 75, 75) , yellow);
+}
 /* .App {
   text-align: center;
   

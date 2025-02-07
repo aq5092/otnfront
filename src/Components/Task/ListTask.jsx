@@ -3,10 +3,12 @@ import axios from "axios";
 import { Button, Table, Modal, Form } from "react-bootstrap";
 import { URL_USERS } from "../Path";
 import { Link } from "react-router-dom";
+import { tr } from "date-fns/locale";
 
 function ListTasks() {
   const [items, setItems] = useState([]);
   const [users, setUsers] = useState([]);
+  const [test, setTest] = useState([]);
   useEffect(() => {
     axios
       .get(`${URL_USERS}` + "users/", {
@@ -14,7 +16,7 @@ function ListTasks() {
       })
       .then((response) => {
         setUsers(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch((error) => {
         console.log("error", error);
@@ -22,15 +24,13 @@ function ListTasks() {
   }, []);
 
   useEffect(() => {
-    axios.get(`${URL_USERS}`+ 'tasks/',
-        {
-          "Content-Type": "application/json",
-          
-        }
-      )
+    axios
+      .get(`${URL_USERS}` + "tasks/", {
+        "Content-Type": "application/json",
+      })
       .then((response) => {
         setItems(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch((error) => {
         console.log("error", error);
@@ -38,13 +38,12 @@ function ListTasks() {
   }, []);
 
   const onDelete = (id) => {
-    const confirm  = window.confirm("Would you like to DELETE")
-    if(confirm){
-      axios.delete(`${URL_USERS}`+ 'taskd/'+ id+'/')
-      .then(res=>{
+    const confirm = window.confirm("Would you like to DELETE");
+    if (confirm) {
+      axios.delete(`${URL_USERS}` + "taskd/" + id + "/").then((res) => {
         // navigator("/users")
         window.location.reload();
-      })
+      });
     }
   };
 
@@ -58,16 +57,20 @@ function ListTasks() {
 
   return (
     <div>
-      <h1>Topshiriqlar</h1>
-      <Link to={'/taskc/'} className="btn btn-success">  Create task</Link>
-      
-      <Link to={'/'} className="btn btn-primary"> Home</Link>
+      <h3>Topshiriqlar ro'yhati</h3>
+      <Link to={"/taskc/"} className="btn btn-success">
+        {" "}
+        Create task
+      </Link>
 
-    
+      <Link to={"/home"} className="btn btn-primary">
+        {" "}
+        Home
+      </Link>
+
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>#</th>
             <th>User</th>
             <th>Topshiriq turi</th>
             <th>Asos</th>
@@ -79,39 +82,56 @@ function ListTasks() {
             <th>Izoh</th>
             <th>Link</th>
             <th>Link_kimda</th>
-            <th>Read</th>
+            {/* <th>Read</th> */}
             <th>Edit</th>
             <th>Delete</th>
           </tr>
         </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <tr key={index}>
-              <td>{index}</td>
-              <td key={index}>user </td>
-              <td key={index}>{item.turi} </td>
-              <td key={index}>{item.asos} </td>
-              <td key={index}>{item.buyruq} </td>
-              <td key={index}>{item.created_at} </td>
-              <td key={index}>{item.mazmuni} </td>
-              <td key={index}>{item.xodim_soni} </td>
-              <td key={index}>{item.status} </td>
-              <td key={index}>{item.izoh} </td>
-              <td key={index}>{item.link} </td>
-              <td key={index}>{item.link_kimda} </td>
-              
-              <td><Link to={`/tasks/${item.id}`} className="btn btn-outline-primary">Read</Link></td>
-              <td>
-                <Link to={`/tasku/${item.id}`} className="btn btn-outline-success">Update</Link>
-              </td>
-              <td>
-                <Button variant="outline-danger" onClick={e => onDelete(item.id)}>
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+
+        {users.map((user) => (
+          <tbody>
+            <td>{user.username}</td>
+            {user.tasks.map((task) => (
+              <tr>
+                <td>{task.id}</td>
+                <td>{task.turi}</td>
+                <td>{task.asos}</td>
+                <td>{task.buyruq}</td>
+                <td>{task.created_at}</td>
+                <td>{task.mazmuni}</td>
+                <td>{task.xodim_soni}</td>
+                <td>{task.status}</td>
+                <td>{task.izoh}</td>
+                <td>{task.link}</td>
+                <td>{task.link_kimda}</td>
+                {/* <td>
+                  <Link
+                    to={`/tasks/${task.id}`}
+                    className="btn btn-outline-primary"
+                  >
+                    Read
+                  </Link>
+                </td> */}
+                <td>
+                  <Link
+                    to={`/tasku/${task.id}`}
+                    className="btn btn-outline-success"
+                  >
+                    Update
+                  </Link>
+                </td>
+                <td>
+                  <Button
+                    variant="outline-danger"
+                    onClick={(e) => onDelete(task.id)}
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        ))}
       </Table>
     </div>
   );

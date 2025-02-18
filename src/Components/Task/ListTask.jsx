@@ -58,7 +58,7 @@ function ListTasks() {
   const onDelete = (id) => {
     const confirm = window.confirm("Would you like to DELETE");
     if (confirm) {
-      axios.delete(`${URL_USERS}` + "taskd/" + id + "/").then((res) => {
+      axios.delete(`${URL_USERS}` + "taskd/" + id ).then((res) => {
         // navigator("/users")
         window.location.reload();
       });
@@ -136,7 +136,7 @@ function ListTasks() {
                 </td> */}
                 <td>
                   <Link
-                    to={`/tasku/${task.id}`}
+                    to={`/tasku/${task.id}/`}
                     className="btn btn-outline-success"
                   >
                     Tahrirlash
@@ -144,10 +144,10 @@ function ListTasks() {
                 </td>
                 <td>
                   <Link
-                    to={`/taskd/${task.id}`}
+                    // to={`/taskd/${task.id}`}
                     variant="outline-danger"
                     onClick={(e) => onDelete(task.id)}
-                    className="btn btn-outline-denger"
+                    className="btn btn-outline-danger"
                   >
                     Delete
                   </Link>

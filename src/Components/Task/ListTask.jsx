@@ -4,11 +4,29 @@ import { Button, Table, Modal, Form } from "react-bootstrap";
 import { URL_USERS } from "../Path";
 import { Link } from "react-router-dom";
 import { tr } from "date-fns/locale";
+import * as XLSX from "xlsx";
+const useExcelExport = () => {
+  const exportToExcel = (data, fileName = "data.xlsx") => {
+    // Convert data to a worksheet
+    const ws = XLSX.utils.json_to_sheet(data);
+    
+    // Create a workbook and append the worksheet
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    // Write file
+    XLSX.writeFile(wb, fileName);
+  };
+
+  return { exportToExcel };
+};
+
 
 function ListTasks() {
   const [items, setItems] = useState([]);
   const [users, setUsers] = useState([]);
   const [test, setTest] = useState([]);
+  const { exportToExcel } = useExcelExport();
   useEffect(() => {
     axios
       .get(`${URL_USERS}` + "users/", {
@@ -51,9 +69,10 @@ function ListTasks() {
     console.log("edit");
   };
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
   const [show, setShow] = useState(false);
+  
 
   return (
     <div>
@@ -67,7 +86,10 @@ function ListTasks() {
         {" "}
         Home
       </Link>
-
+      <Link onClick={() => exportToExcel(items, "myData.xlsx")} className="btn btn-info">
+        {" "}
+        To excel
+      </Link>
       <Table striped bordered hover>
         <thead>
           <tr>

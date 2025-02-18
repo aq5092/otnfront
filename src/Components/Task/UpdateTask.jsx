@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { URL_USERS } from "../Path";
-import { Button, Table } from "react-bootstrap";
+import { Button, Table,Form } from "react-bootstrap";
 
 function UpdateTask() {
   const { id } = useParams();
@@ -25,7 +25,7 @@ function UpdateTask() {
   //   setItem({ ...item, created_at: date });
   //   console.log("Selected DateTime:", date);
   // };
-
+  const list_status = ["Jarayonda", "Tugatildi", "Toxtatildi","Boshlanmadi"];
   const navigate = useNavigate();
   const numericId = Number(id); // Explicitly convert to a number
   const result = numericId;
@@ -36,7 +36,12 @@ function UpdateTask() {
       .then((res) => setItem(res.data))
       .catch((err) => console.log(err));
   }, []);
-
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setItem({ ...item, [name]: value });
+    // setUsers({...users,[name]: value});
+    // console.log(item)
+  };
   const handelUpdate = (event) => {
     event.preventDefault();
     // console.log(values.data)
@@ -138,12 +143,30 @@ function UpdateTask() {
           <tbody>
             <tr>
               <td>
-                <input
+              <Form.Select
+                      aria-label="Default select example"
+                      onChange={handleChange}
+                      name="status"
+                    >
+                      <option>Select status</option>
+                      {list_status.map((status, index) => (
+                        <option
+                          key={index}
+                          name="status"
+                          value={status}
+                          onChange={(e) => setItem({ ...item, status: e.target.value })}
+                          // onChange={handleChange}
+                        >
+                          {status}
+                        </option>
+                      ))}
+                    </Form.Select>
+                {/* <input
                   type="text"
                   name="status"
                   value={item.status}
                   onChange={(e) => setItem({ ...item, status: e.target.value })}
-                />
+                /> */}
               </td>
               <td>
                 <input
@@ -173,12 +196,12 @@ function UpdateTask() {
               </td>
               <td>
                 <Button type="submit" variant="outline-danger">
-                  Submit
+                  Tasdiqlash
                 </Button>
               </td>
               <td>
                 <Link to="/tasks" className="btn btn-info">
-                  Back
+                  Orqaga
                 </Link>
               </td>
             </tr>

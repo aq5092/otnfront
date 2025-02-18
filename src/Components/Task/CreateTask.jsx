@@ -34,7 +34,7 @@ function CreateTask() {
       });
   }, []);
 
-  const list_status = ["Jarayonda", "Tugatildi", "Toxtatildi"];
+  const list_status = ["Jarayonda", "Tugatildi", "Toxtatildi","Boshlanmadi"];
   const data = {
     Rahbar_topshirigi: [
       "Avtosanoat",

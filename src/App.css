@@ -10,7 +10,7 @@
   color: aliceblue;
 }
 .home {
-  background-image: linear-gradient(to right, red , yellow);
+  background-image: linear-gradient(to right, rgb(142, 142, 144) , rgb(211, 211, 216));
   /* background-image: url(../src/Components/image/image.2.jpg); */
   color: honeydew;
   
@@ -18,6 +18,14 @@
 .updatetask{
   background-image: linear-gradient(to right, rgb(106, 75, 75) , yellow);
 }
+
+.tasktotal , .jarayon, .boshlanmadi, .tuxtadi, .tugadi {
+  background-color:grey;
+  min-width: 200px;
+ 
+  
+}
+
 /* .App {
   text-align: center;
   

@@ -117,7 +117,7 @@ function ListTasks() {
                     to={`/tasku/${task.id}`}
                     className="btn btn-outline-success"
                   >
-                    Update
+                    Tahrirlash
                   </Link>
                 </td>
                 <td>

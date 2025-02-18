@@ -19,7 +19,7 @@ function Home() {
         <Sidebar/>
         <div style={{ flex: 1 }}>
           <Content/>
-          <DependentSelects/>
+          {/* <DependentSelects/> */}
           {/* <Select/> */}
           {/* <DateTimePicker/> */}
           {/* <Link to={`/users`} className="btn btn-outline-primary">Show user</Link> */}

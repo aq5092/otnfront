@@ -144,7 +144,7 @@ function ListTasks() {
                 </td>
                 <td>
                   <Link
-                    to={`/taskd/${task.id}`}
+                    // to={`/taskd/${task.id}`}
                     variant="outline-danger"
                     onClick={(e) => onDelete(task.id)}
                   >

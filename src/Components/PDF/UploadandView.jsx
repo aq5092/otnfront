@@ -23,7 +23,8 @@ function FolderTree() {
   useEffect(() => {
     fetchFolders();
     if (typeof selectedItem === "string") {
-      setFormattedPath(selectedItem.replace("/", "%5C"));
+      // setFormattedPath(selectedItem.replace("/", "%5C"));
+      setFormattedPath(selectedItem.replace("\\", "/"));
     }
   }, [selectedItem]);
 console.log(`${URL_USERS}`+formattedPath)

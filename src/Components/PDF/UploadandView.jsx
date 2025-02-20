@@ -19,16 +19,16 @@ function FolderTree() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedItem, setSelectedItem] = useState("");
   const [formattedPath, setFormattedPath] = useState("");
-
+// /\\/g
   useEffect(() => {
     fetchFolders();
     if (typeof selectedItem === "string") {
-      setFormattedPath(selectedItem.replace(/\\/g, "%5C"));
+      setFormattedPath(selectedItem.replace("/", "%5C"));
     }
   }, [selectedItem]);
-
+console.log(`${URL_USERS}`+formattedPath)
   const fetchFolders = async () => {
-    const res = await axios.get(`${URL_USERS}` +"list-folders/");
+    const res = await axios.get(`${URL_USERS}`+"list-folders/");
     setTree(res.data.tree);
   };
   //   console.log(tree)
@@ -38,7 +38,7 @@ function FolderTree() {
     const formData = new FormData();
     formData.append("file", file);
 
-    await axios.post(`${URL_USERS}` +`upload-file/`, formData, {
+    await axios.post(`${URL_USERS}`+`upload-file/`, formData, {
       params: { folder_path: selectedFolder },
     });
 
@@ -49,7 +49,7 @@ function FolderTree() {
 
   const deleteItem = async (itemPath) => {
     if (window.confirm(`"${itemPath}" ni o‘chirmoqchimisiz?`)) {
-      await axios.delete(`${URL_USERS}` +`delete-item/`, {
+      await axios.delete(`${URL_USERS}`+`delete-item/`, {
         params: { item_path: itemPath },
       });
       fetchFolders();
@@ -93,7 +93,7 @@ function FolderTree() {
             <div className="file-actions">
               {node.type === "file" && (
                 <a
-                  href={`${URL_USERS}` +`download-file/?file_path=${fullPath}`}
+                  href={`${URL_USERS}`+`download-file/?file_path=${fullPath}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -116,7 +116,7 @@ function FolderTree() {
       <Row>
         <Col>
           <div className="folder-container">
-            <h2 className="folder-title">📂 Fayllarni yuklab olish</h2>
+            <h2 className="folder-title">📂 Tree Folder + Fayl CRUD</h2>
 
             {/* Fayl yuklash */}
             <div className="folder-actions">
@@ -139,7 +139,9 @@ function FolderTree() {
             {/* {formattedPath} && */}
             {formattedPath ? (
                <iframe
-               src={`${URL_USERS}` +formattedPath}
+
+               src={`${URL_USERS}`+formattedPath}
+               
                width="80%"
                height="600px"
                style={{ border: "1px solid black", marginTop: "20px" }}

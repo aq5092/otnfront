@@ -27,7 +27,7 @@ function FolderTree() {
   }, [selectedItem]);
 
   const fetchFolders = async () => {
-    const res = await axios.get("http://127.0.0.1:8000/list-folders/");
+    const res = await axios.get(`${URL_USERS}` +"list-folders/");
     setTree(res.data.tree);
   };
   //   console.log(tree)
@@ -37,7 +37,7 @@ function FolderTree() {
     const formData = new FormData();
     formData.append("file", file);
 
-    await axios.post(`http://127.0.0.1:8000/upload-file/`, formData, {
+    await axios.post(`${URL_USERS}` +`upload-file/`, formData, {
       params: { folder_path: selectedFolder },
     });
 
@@ -48,7 +48,7 @@ function FolderTree() {
 
   const deleteItem = async (itemPath) => {
     if (window.confirm(`"${itemPath}" ni o‘chirmoqchimisiz?`)) {
-      await axios.delete(`http://127.0.0.1:8000/delete-item/`, {
+      await axios.delete(`${URL_USERS}` +`delete-item/`, {
         params: { item_path: itemPath },
       });
       fetchFolders();
@@ -92,7 +92,7 @@ function FolderTree() {
             <div className="file-actions">
               {node.type === "file" && (
                 <a
-                  href={`http://127.0.0.1:8000/download-file/?file_path=${fullPath}`}
+                  href={`${URL_USERS}` +`download-file/?file_path=${fullPath}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -138,7 +138,7 @@ function FolderTree() {
             {/* {formattedPath} && */}
             {formattedPath ? (
                <iframe
-               src={`http://127.0.0.1:8000/`+formattedPath}
+               src={`${URL_USERS}` +formattedPath}
                width="80%"
                height="600px"
                style={{ border: "1px solid black", marginTop: "20px" }}

@@ -8,7 +8,6 @@ import {
   FaTrash,
   FaDownload,
   FaUpload,
-  FaSearch,
 } from "react-icons/fa";
 // import "./FolderTree.css"; // 📌 CSS import
 
@@ -21,13 +20,9 @@ function FolderTree() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedItem, setSelectedItem] = useState("");
   const [formattedPath, setFormattedPath] = useState("");
-
-  const [results, setResults] = useState([]);
-  const [newFolderName, setNewFolderName] = useState("");
-  const [renameName, setRenameName] = useState("");
   const [searchQuery, setSearchQuery] = useState(""); // 🔍 Qidiruv holati
   const [filteredTree, setFilteredTree] = useState([]);
-  // /\\/g
+
   useEffect(() => {
     fetchFolders();
     if (typeof selectedItem === "string") {
@@ -35,7 +30,8 @@ function FolderTree() {
       // setFormattedPath(selectedItem.replace("\\", "/"));
     }
   }, [selectedItem]);
-  console.log(`${URL_USERS}` + formattedPath);
+
+  // console.log(`${URL_USERS}` + formattedPath);
   const fetchFolders = async () => {
     const res = await axios.get(`${URL_USERS}` + "list-folders/");
     setTree(res.data.tree);
@@ -54,6 +50,7 @@ function FolderTree() {
     setFile(null);
     setPreviewUrl(null);
     fetchFolders();
+    window.location.reload();
   };
 
   const deleteItem = async (itemPath) => {
@@ -115,6 +112,19 @@ function FolderTree() {
         </div>
       );
     });
+  const addFolder = async () => {
+    const parentName = prompt("Diskni kiriting:");
+    const folderName = prompt("Yangi papka nomini kiriting:");
+    if (!folderName) return;
+
+    await axios.post(
+      `${URL_USERS}` +
+        `create-folder/?parent_path=${parentName}` +
+        `&folder_name=${folderName}`
+    );
+    fetchFolders();
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (!query) {
@@ -140,76 +150,22 @@ function FolderTree() {
     setFilteredTree(filterNodes(tree));
   };
 
-  // const searchFiles = async () => {
-  //   const res = await axios.get(
-  //     `${URL_USERS}` + `search/?query=${searchQuery}`
-  //   );
-  //   setResults(res.data.results);
-  //   console.log(results);
-  // };
-  const addFolder = async () => {
-    const parentName = prompt("Yangi nomini kiriting:");
-    const folderName = prompt("Yangi papka nomini kiriting:");
-    if (!folderName) return;
-
-    await axios.post(
-      `${URL_USERS}` +
-        `create-folder/?parent_path=${parentName}` +
-        `&folder_name=${folderName}`
-    );
-    fetchFolders();
-  };
-  // const createFolder = async (parentPath) => {
-  //   if (!newFolderName) return alert("Papka nomini kiriting!");
-  //   await axios.post(`${URL_USERS}` + `create-folder/`, null, {
-  //     params: { parent_path: parentPath || "", folder_name: newFolderName },
-  //   });
-  //   setNewFolderName("");
-  //   fetchFolders();
-  // };
   return (
     <Container>
       <Row>
         <Col>
           <div className="folder-container">
-            <Row>
-              <Col>
-                <h4 className="folder-title">
-                  📂 Mehnat va me'yorlashtirish bo'lim hujjatlari
-                </h4>
-              </Col>
-              <Col>
-                <Link to={"/home"} className="btn btn-primary">
-                  Home
-                </Link>
-                <button onClick={addFolder} className="btn btn-info">
-                  📂 Add{" "}
-                </button>{" "}
-              </Col>
-              <Col>
-                {/* <div>
-                  <input
-                    type="text"
-                    placeholder="Papka nomi"
-                    value={newFolderName}
-                    onChange={(e) => setNewFolderName(e.target.value)}
-                  />
-                  <button onClick={() => createFolder("")}>
-                  📂 NEW Yaratish
-                  </button>
-                </div> */}
-              </Col>
-            </Row>
-            <Row>
-              {/* <h5>PDF Qidirish</h5>
-              <input
-                type="text"
-                placeholder="Fayl nomini kiriting..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              /> */}
-              {/* <button onClick={searchFiles}>Qidirish</button> */}
-            </Row>
+            <h2 className="folder-title">
+              📂 Mehnat va me'yorlashtirish bo'lim hujjatlari
+            </h2>
+            <Link to={"/home"} className="btn btn-primary">
+              {" "}
+              Home
+            </Link>
+            <button onClick={addFolder} className="btn btn-info">
+              📂 Add{" "}
+            </button>{" "}
+            {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
             {/* Fayl yuklash */}
             <div className="folder-actions">
               <input type="file" onChange={handleFileSelect} />
@@ -218,43 +174,30 @@ function FolderTree() {
               </button>
             </div>
             <div className="folder-container">
-          <h5 className="folder-title">
-            📂 Papka + Fayli 🔍 Qidiruv
-          </h5>
-
-          {/* 🔍 Qidiruv qutisi */}
-          <div className="search-bar">
-            {/* <FaSearch className="search-icon" /> */}
-            <input
-              type="text"
-              placeholder="Fayl yoki papka qidiring..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-          </div>
-
-          {/* Papkalar va fayllar daraxti */}
-          <div className="tree-container">{renderTree(filteredTree)}</div>
-
-          {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
-        </div>
-
+              {/* 🔍 Qidiruv qutisi */}
+              <div className="search-bar">
+                <input
+                  type="text"
+                  placeholder="Fayl yoki papka qidiring..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
+              </div>
+              {/* Papkalar va fayllar daraxti */}
+              {searchQuery ? (
+                <div className="tree-container">{renderTree(filteredTree)}</div>
+              ) : (
+                <div className="tree-container">{renderTree(tree)}</div>
+              )}
+              
+              {/* <div className="tree-container">{renderTree(filteredTree)}</div> */}
+            </div>
             {/* Papkalar va fayllar daraxti */}
-            {/* <div className="tree-container">{renderTree(tree)}</div>
-
-            {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>} */}
+            {/* <div className="tree-container">{renderTree(tree)}</div> */}
+            {/* {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>} */}
             {/* <div >{PDFViewer(previewUrl)}</div> */}
           </div>
-          <h2>Natijalar</h2>
-          <ul>
-            {/* {results.map((filename) => (
-          <li key={filename}>
-            {filename} <button onClick={() => downloadFile(filename)}>Yuklab olish</button>
-          </li>
-        ))} */}
-          </ul>
         </Col>
-
         <Col>
           <div className="preview-container">
             <h3>📄 Tanlangan Fayl:</h3>
@@ -297,29 +240,25 @@ function FolderTree() {
           )} */}
         </Col>
       </Row>
-      <Row>
-        {/* <div className="folder-container">
-          <h2 className="folder-title">
-            📂 Tree Folder + Fayl CRUD + 🔍 Qidiruv
-          </h2> */}
+      {/* <div className="folder-container">
+      <h2 className="folder-title">📂 Tree Folder + Fayl CRUD + 🔍 Qidiruv</h2> */}
 
-          {/* 🔍 Qidiruv qutisi */}
-          {/* <div className="search-bar">
-            <FaSearch className="search-icon" />
-            <input
-              type="text"
-              placeholder="Fayl yoki papka qidiring..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-          </div> */}
+      {/* 🔍 Qidiruv qutisi */}
+      {/* <div className="search-bar">
+       
+        <input
+          type="text"
+          placeholder="Fayl yoki papka qidiring..."
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+      </div> */}
 
-          {/* Papkalar va fayllar daraxti */}
-          {/* <div className="tree-container">{renderTree(filteredTree)}</div>
+      {/* Papkalar va fayllar daraxti */}
+      {/* <div className="tree-container">{renderTree(filteredTree)}</div>
 
-          {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
-        </div> */}
-      </Row>
+      {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
+    </div> */}
       {/* <br />
       <Row>
         {tree.map((item, index) => (

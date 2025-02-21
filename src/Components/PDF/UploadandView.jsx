@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { URL_USERS } from "../Path";
+import { Link } from "react-router-dom";
 import {
   FaFolder,
   FaFile,
   FaTrash,
   FaDownload,
   FaUpload,
+  FaSearch,
 } from "react-icons/fa";
 // import "./FolderTree.css"; // 📌 CSS import
 
@@ -19,7 +21,13 @@ function FolderTree() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [selectedItem, setSelectedItem] = useState("");
   const [formattedPath, setFormattedPath] = useState("");
-// /\\/g
+
+  const [results, setResults] = useState([]);
+  const [newFolderName, setNewFolderName] = useState("");
+  const [renameName, setRenameName] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // 🔍 Qidiruv holati
+  const [filteredTree, setFilteredTree] = useState([]);
+  // /\\/g
   useEffect(() => {
     fetchFolders();
     if (typeof selectedItem === "string") {
@@ -27,9 +35,9 @@ function FolderTree() {
       // setFormattedPath(selectedItem.replace("\\", "/"));
     }
   }, [selectedItem]);
-console.log(`${URL_USERS}`+formattedPath)
+  console.log(`${URL_USERS}` + formattedPath);
   const fetchFolders = async () => {
-    const res = await axios.get(`${URL_USERS}`+"list-folders/");
+    const res = await axios.get(`${URL_USERS}` + "list-folders/");
     setTree(res.data.tree);
   };
   //   console.log(tree)
@@ -39,7 +47,7 @@ console.log(`${URL_USERS}`+formattedPath)
     const formData = new FormData();
     formData.append("file", file);
 
-    await axios.post(`${URL_USERS}`+`upload-file/`, formData, {
+    await axios.post(`${URL_USERS}` + `upload-file/`, formData, {
       params: { folder_path: selectedFolder },
     });
 
@@ -50,19 +58,15 @@ console.log(`${URL_USERS}`+formattedPath)
 
   const deleteItem = async (itemPath) => {
     if (window.confirm(`"${itemPath}" ni o‘chirmoqchimisiz?`)) {
-      await axios.delete(`${URL_USERS}`+`delete-item/`, {
+      await axios.delete(`${URL_USERS}` + `delete-item/`, {
         params: { item_path: itemPath },
       });
       fetchFolders();
     }
   };
   const handleClick = (item) => {
-  
     setSelectedItem(item.path);
- 
   };
-
- 
 
   const handleFileSelect = (event) => {
     const selectedFile = event.target.files[0];
@@ -94,7 +98,7 @@ console.log(`${URL_USERS}`+formattedPath)
             <div className="file-actions">
               {node.type === "file" && (
                 <a
-                  href={`${URL_USERS}`+`download-file/?file_path=${fullPath}`}
+                  href={`${URL_USERS}` + `download-file/?file_path=${fullPath}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -111,14 +115,101 @@ console.log(`${URL_USERS}`+formattedPath)
         </div>
       );
     });
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (!query) {
+      setFilteredTree(tree);
+      return;
+    }
 
+    // 🔍 Qidiruv bo‘yicha filter
+    const filterNodes = (nodes) =>
+      nodes
+        .map((node) => {
+          if (node.name.toLowerCase().includes(query.toLowerCase()))
+            return node;
+          if (node.children) {
+            const filteredChildren = filterNodes(node.children);
+            if (filteredChildren.length > 0)
+              return { ...node, children: filteredChildren };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+    setFilteredTree(filterNodes(tree));
+  };
+
+  // const searchFiles = async () => {
+  //   const res = await axios.get(
+  //     `${URL_USERS}` + `search/?query=${searchQuery}`
+  //   );
+  //   setResults(res.data.results);
+  //   console.log(results);
+  // };
+  const addFolder = async () => {
+    const parentName = prompt("Yangi nomini kiriting:");
+    const folderName = prompt("Yangi papka nomini kiriting:");
+    if (!folderName) return;
+
+    await axios.post(
+      `${URL_USERS}` +
+        `create-folder/?parent_path=${parentName}` +
+        `&folder_name=${folderName}`
+    );
+    fetchFolders();
+  };
+  // const createFolder = async (parentPath) => {
+  //   if (!newFolderName) return alert("Papka nomini kiriting!");
+  //   await axios.post(`${URL_USERS}` + `create-folder/`, null, {
+  //     params: { parent_path: parentPath || "", folder_name: newFolderName },
+  //   });
+  //   setNewFolderName("");
+  //   fetchFolders();
+  // };
   return (
     <Container>
       <Row>
         <Col>
           <div className="folder-container">
-            <h2 className="folder-title">📂 Tree Folder + Fayl CRUD</h2>
-
+            <Row>
+              <Col>
+                <h4 className="folder-title">
+                  📂 Mehnat va me'yorlashtirish bo'lim hujjatlari
+                </h4>
+              </Col>
+              <Col>
+                <Link to={"/home"} className="btn btn-primary">
+                  Home
+                </Link>
+                <button onClick={addFolder} className="btn btn-info">
+                  📂 Add{" "}
+                </button>{" "}
+              </Col>
+              <Col>
+                {/* <div>
+                  <input
+                    type="text"
+                    placeholder="Papka nomi"
+                    value={newFolderName}
+                    onChange={(e) => setNewFolderName(e.target.value)}
+                  />
+                  <button onClick={() => createFolder("")}>
+                  📂 NEW Yaratish
+                  </button>
+                </div> */}
+              </Col>
+            </Row>
+            <Row>
+              {/* <h5>PDF Qidirish</h5>
+              <input
+                type="text"
+                placeholder="Fayl nomini kiriting..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              /> */}
+              {/* <button onClick={searchFiles}>Qidirish</button> */}
+            </Row>
             {/* Fayl yuklash */}
             <div className="folder-actions">
               <input type="file" onChange={handleFileSelect} />
@@ -126,29 +217,57 @@ console.log(`${URL_USERS}`+formattedPath)
                 <FaUpload /> Yuklash
               </button>
             </div>
+            <div className="folder-container">
+          <h5 className="folder-title">
+            📂 Papka + Fayli 🔍 Qidiruv
+          </h5>
+
+          {/* 🔍 Qidiruv qutisi */}
+          <div className="search-bar">
+            {/* <FaSearch className="search-icon" /> */}
+            <input
+              type="text"
+              placeholder="Fayl yoki papka qidiring..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+          </div>
+
+          {/* Papkalar va fayllar daraxti */}
+          <div className="tree-container">{renderTree(filteredTree)}</div>
+
+          {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
+        </div>
 
             {/* Papkalar va fayllar daraxti */}
-            <div className="tree-container">{renderTree(tree)}</div>
+            {/* <div className="tree-container">{renderTree(tree)}</div>
 
-            {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
+            {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>} */}
             {/* <div >{PDFViewer(previewUrl)}</div> */}
           </div>
+          <h2>Natijalar</h2>
+          <ul>
+            {/* {results.map((filename) => (
+          <li key={filename}>
+            {filename} <button onClick={() => downloadFile(filename)}>Yuklab olish</button>
+          </li>
+        ))} */}
+          </ul>
         </Col>
+
         <Col>
           <div className="preview-container">
             <h3>📄 Tanlangan Fayl:</h3>
             {/* {formattedPath} && */}
             {formattedPath ? (
-               <iframe
-
-               src={`${URL_USERS}`+formattedPath}
-               
-               width="80%"
-               height="600px"
-               style={{ border: "1px solid black", marginTop: "20px" }}
-             ></iframe>
+              <iframe
+                src={`${URL_USERS}` + formattedPath}
+                width="80%"
+                height="600px"
+                style={{ border: "1px solid black", marginTop: "20px" }}
+              ></iframe>
             ) : (
-                <iframe
+              <iframe
                 src={`./image/image2.jpg`}
                 width="80%"
                 height="600px"
@@ -161,7 +280,6 @@ console.log(`${URL_USERS}`+formattedPath)
               height="600px"
               style={{ border: "1px solid black", marginTop: "20px" }}
             ></iframe> */}
-
           </div>
 
           {/* Fayl preview */}
@@ -178,6 +296,29 @@ console.log(`${URL_USERS}`+formattedPath)
             </div>
           )} */}
         </Col>
+      </Row>
+      <Row>
+        {/* <div className="folder-container">
+          <h2 className="folder-title">
+            📂 Tree Folder + Fayl CRUD + 🔍 Qidiruv
+          </h2> */}
+
+          {/* 🔍 Qidiruv qutisi */}
+          {/* <div className="search-bar">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Fayl yoki papka qidiring..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+          </div> */}
+
+          {/* Papkalar va fayllar daraxti */}
+          {/* <div className="tree-container">{renderTree(filteredTree)}</div>
+
+          {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
+        </div> */}
       </Row>
       {/* <br />
       <Row>

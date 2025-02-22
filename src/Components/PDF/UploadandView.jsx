@@ -9,7 +9,7 @@ import {
   FaDownload,
   FaUpload,
 } from "react-icons/fa";
-// import "./FolderTree.css"; // 📌 CSS import
+import "./FolderTree.css"; // 📌 CSS import
 
 import { Col, Container, Row } from "react-bootstrap";
 
@@ -151,19 +151,20 @@ function FolderTree() {
   };
 
   return (
-    <Container>
+    <Container className="pdf">
       <Row>
         <Col>
           <div className="folder-container">
-            <h2 className="folder-title">
+            <h4 className="folder-title">
               📂 Mehnat va me'yorlashtirish bo'lim hujjatlari
-            </h2>
+            </h4>
             <Link to={"/home"} className="btn btn-primary">
               {" "}
-              Home
+              Bosh menyu
             </Link>
+            &nbsp;
             <button onClick={addFolder} className="btn btn-info">
-              📂 Add{" "}
+              📂 Yangi papka{" "}
             </button>{" "}
             {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
             {/* Fayl yuklash */}
@@ -200,13 +201,13 @@ function FolderTree() {
         </Col>
         <Col>
           <div className="preview-container">
-            <h3>📄 Tanlangan Fayl:</h3>
+            <h6>📄 Tanlangan Fayl: {selectedItem}</h6>
             {/* {formattedPath} && */}
             {formattedPath ? (
               <iframe
                 src={`${URL_USERS}` + formattedPath}
-                width="80%"
-                height="600px"
+                width="100%"
+                height="900px"
                 style={{ border: "1px solid black", marginTop: "20px" }}
               ></iframe>
             ) : (

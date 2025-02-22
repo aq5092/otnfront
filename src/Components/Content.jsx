@@ -8,6 +8,9 @@ import axios from "axios";
 import { URL_USERS } from "./Path";
 import { Link } from "react-router-dom";
 
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import { useNavigate } from "react-router-dom";
+import ChartComponent from "./Task/TaskDashboard";
 const Content = () => {
   const [tasks, setTasks] = useState([]);
   const [jarayon, setJarayon] = useState([]);
@@ -303,7 +306,9 @@ const Content = () => {
           {" "}
           <Card>
             <Card.Body>This is some text within a card body.</Card.Body>
+
           </Card>
+          <ChartComponent />
         </Col>
       </Row>
     </Container>

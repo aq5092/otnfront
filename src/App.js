@@ -16,6 +16,7 @@ import Upload from './Components/PDF/Upload';
 import FolderTree from './Components/PDF/FolderTree';
 import ReadFile from './Components/PDF/Readfile';
 import UploadAndView from './Components/PDF/UploadandView';
+import OpenFolder from './Components/Task/OpenFolder';
 function App() {
   return (
     
@@ -31,8 +32,9 @@ function App() {
         <Route path="/tasks" element={<ListTasks/>}/>
         <Route path="/tasks/:id" element={<ReadTask />} />
         <Route path="/tasku/:id" element={<UpdateTask/>}/>
-        <Route path="/pdf" element={<UploadAndView/>}/>
-        {/* <Route path="/pdf" element={<FolderTree/>}/> */}
+        {/* <Route path="/pdf" element={<UploadAndView/>}/> */}
+
+        <Route path="/pdf" element={<OpenFolder/>}/>
         {/* <Route path="/pdf" element={<ReadFile/>}/> */}
 
       </Routes>

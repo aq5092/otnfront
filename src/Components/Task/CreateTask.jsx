@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Form } from "react-bootstrap";
+import { Button, Table, Form, Modal } from "react-bootstrap";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation  } from "react-router-dom";
 import { URL_USERS } from "../Path";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+// import { asosfile} from '../PDF/UploadandView';
+import {
+  FaFolder,
+  FaFile,
+  FaTrash,
+  FaDownload,
+  FaUpload,
+} from "react-icons/fa";
+
+import OpenFolder from './OpenFolder';
 
 function CreateTask() {
   //  ############################################################
@@ -13,11 +23,21 @@ function CreateTask() {
   const [firstSelect, setFirstSelect] = useState(""); // State for first dropdown
   const [secondOptions, setSecondOptions] = useState([]); // Options for second dropdown
   const [secondSelect, setSecondSelect] = useState(""); // State for second dropdown
+  const [fileasos, setFileAsos] = useState(null); // asos file
+  
+  const [filebuyruq, setFileBuyruq] = useState(null); // buyruq file
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [tree, setTree] = useState([]);
+  
+  
+  const [filenames, setFilenames] = useState([]);
 
+  
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setItem({ ...item, created_at: date });
-    console.log("Selected DateTime:", date);
+    // console.log("Selected DateTime:", date);
   };
 
   useEffect(() => {
@@ -27,14 +47,23 @@ function CreateTask() {
       })
       .then((response) => {
         setUsers(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch((error) => {
         console.log("error", error);
       });
+
   }, []);
 
-  const list_status = ["Jarayonda", "Tugatildi", "Toxtatildi","Boshlanmadi"];
+  useEffect(() => {
+    axios.get(`${URL_USERS}` + "pdfs/").then((res) => {
+      setFilenames(res.data);
+      // console.log(res.data)
+          });
+  }, []);
+
+  
+  const list_status = ["Jarayonda", "Tugatildi", "Toxtatildi", "Boshlanmadi"];
   const data = {
     Rahbar_topshirigi: [
       "Avtosanoat",
@@ -76,20 +105,36 @@ function CreateTask() {
       "Yillik ish taqvimi (kalendar)",
     ],
   };
-
+ 
+  // const name = selectedItem ? selectedItem : "empty";
+  // const name = test ? test : "empty";
+  
+  // console.log(name)
+  // const name = "empty";
+  // const asfile = localStorage.getItem("file") || "";
+  // const name = asfile.replace(/.*[\/\\]/, "");
   const [item, setItem] = useState({
-    turi: "",
-    asos: "",
-    buyruq: "",
+    hujjat_id: "",
+    hujjat_turi: "",
+    buyruq_pdf: "",
     created_at: "",
     mazmuni: "",
     xodim_soni: 0,
     status: "",
     izoh: "",
-    link: "",
-    link_kimda: "",
+    filename: "",
     owner_id: "",
   });
+
+
+
+  const openAsosfile = () => {
+
+    window.open('/pdf', '_blank');
+    // navigate("/taskc");
+    
+  }
+  // window.location.reload();
   const id = item.owner_id;
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
@@ -105,29 +150,83 @@ function CreateTask() {
       const data = await response.json();
       console.log("Response from server:", data);
       navigate("/tasks");
+      
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
+  const handleFileSelect = (event) => {
+    const selectedFile = event.target.files[0];
+    setFileBuyruq(selectedFile);
+
+    if (selectedFile) {
+      const fileUrl = URL.createObjectURL(selectedFile);
+      setPreviewUrl(fileUrl);
+    }
+    const filename = event.target.value;
+    const name = filename.replace(/.*[\/\\]/, "");
+    setFileBuyruq(event.target.value);
+    setItem({ ...item, buyruq_pdf: name });
+  };
+
+  const asosFileSelect = (event) => {
+    const selectedFile = event.target.files[0];
+    // const selectedFile = event.target.value;
+    setFileAsos(selectedFile);
+
+    if (selectedFile) {
+      const fileUrl = URL.createObjectURL(selectedFile);
+      setPreviewUrl(fileUrl);
+    }
+    const filenamee = event.target.value;
+    const name = filenamee.replace(/.*[\/\\]/, "");
+    setFileAsos(event.target.value);
+    setItem({ ...item, filename: name });
+  };
+
   const handleChange = (e) => {
+    // window.location.reload();
     const { name, value } = e.target;
     setItem({ ...item, [name]: value });
     // setUsers({...users,[name]: value});
     // console.log(item)
   };
+
   const handleFirstSelectChange = (e) => {
     const selectedValue = e.target.value;
     setFirstSelect(selectedValue);
     setSecondOptions(data[selectedValue] || []); // Update second dropdown options
     setSecondSelect(""); // Reset the second dropdown
-    setItem({ ...item, turi: selectedValue });
+    setItem({ ...item, hujjat_turi: selectedValue });
   };
   const handleSecondSelectChange = (e) => {
     setSecondSelect(e.target.value);
     setItem({ ...item, mazmuni: e.target.value });
   };
+ 
 
+  // const addFolder = async () => {
+  //   const parentName = prompt("Diskni kiriting:");
+  //   const folderName = prompt("Yangi papka nomini kiriting:");
+  //   if (!folderName) return;
+
+  //   await axios.post(
+  //     `${URL_USERS}` +
+  //       `create-folder/?parent_path=${parentName}` +
+  //       `&folder_name=${folderName}`
+  //   );
+
+  // };
+  // const fetchFolders = async () => {
+  //   // const res = await axios.get(`${URL_USERS}` + "list-folders/");
+  //   // setTree(res.data.tree);
+  //   return (
+  //     window.alert("Papka tanlandi"),
+  //     setSelectedFolder("Papka tanlandi"),
+  //     console.log("Papka tanlandi")
+  //   );
+  // };
   return (
     <>
       <div className=" w-auto justify-content-center align-items-center bg-light ">
@@ -138,10 +237,10 @@ function CreateTask() {
               <tbody>
                 <tr>
                   <th>User</th>
-                  <th>Topshiriq turi</th>
-                  <th>Asos</th>
-                  <th>Buyruq raqami</th>
-                  <th>Sana</th>
+                  <th>hujjat_id</th>
+                  <th>hujjat_turi</th>
+                  <th>buyruq_pdf</th>
+                  <th>created_at</th>
                 </tr>
                 <tr>
                   <td>
@@ -164,8 +263,16 @@ function CreateTask() {
                     </Form.Select>
                   </td>
                   <td>
+                    <input
+                      type="text"
+                      name="hujjat_id"
+                      value={item.hujjat_id}
+                      onChange={handleChange}
+                    />
+                  </td>
+                  <td>
                     <select
-                      name="turi"
+                      name="hujjat_turi"
                       value={firstSelect}
                       onChange={handleFirstSelectChange}
                       className="border p-2 rounded mb-4 w-full"
@@ -181,22 +288,16 @@ function CreateTask() {
                     </select>
                   </td>
                   <td>
-                    <input
-                      type="text"
-                      name="asos"
-                      value={item.asos}
-                      onChange={handleChange}
-                    />
+                    <div className="folder-actions">
+                      <input
+                        type="file"
+                        onChange={handleFileSelect}
+                        name="buyruq_pdf"
+                      />
+                    </div>
+                   
                   </td>
-                  <td>
-                    {" "}
-                    <input
-                      type="text"
-                      name="buyruq"
-                      value={item.buyruq}
-                      onChange={handleChange}
-                    />
-                  </td>
+
                   <td>
                     <DatePicker
                       selected={selectedDate}
@@ -217,8 +318,7 @@ function CreateTask() {
                   <th>Xodimlar soni</th>
                   <th>Status</th>
                   <th>Izoh</th>
-                  <th>Link</th>
-                  <th>Link_kimda</th>
+                  <th>Asos</th>
                 </tr>
                 <tr>
                   <td>
@@ -277,22 +377,36 @@ function CreateTask() {
                     />
                   </td>
                   <td>
-                    <input
-                      type="text"
-                      name="link"
-                      value={item.link}
+                  <Form.Select
+                      aria-label="Default select example"
                       onChange={handleChange}
-                    />
-                  </td>
-                  <td>
-                    <input
+                      name="filename"
+                    >
+                  <option >
+                        -- Quyidagilardan birini tanlang --
+                      </option>
+                      {filenames.map((item) => (
+                        <option key={item} value={item.filename}>
+                          {item.filename}
+                        </option>
+                      ))}
+                 </Form.Select>
+                    {/* <div className="folder-actions">
+
+                      <input
+                        type="file"
+                        onChange={asosFileSelect}
+                        name="filename"
+                      />
+                    </div> */}
+                    {/* <input
                       type="text"
-                      name="link_kimda"
-                      value={item.link_kimda}
+                      name="asos_id"
+                      value={item.asos_id}
                       onChange={handleChange}
-                      placeholder="link kimda"
-                    />
+                    /> */}
                   </td>
+                  
                 </tr>
               </tbody>
             </Table>

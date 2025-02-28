@@ -10,11 +10,13 @@ import {
   FaUpload,
   
 } from "react-icons/fa";
-import "./FolderTree.css"; // 📌 CSS import
+// import "./FolderTree.css"; // 📌 CSS import
 
 import { Col, Container, Row } from "react-bootstrap";
 
-function FolderTree() {
+
+
+function OpenFolder() {
   const [tree, setTree] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [file, setFile] = useState(null);
@@ -23,6 +25,7 @@ function FolderTree() {
   const [formattedPath, setFormattedPath] = useState("");
   const [searchQuery, setSearchQuery] = useState(""); // 🔍 Qidiruv holati
   const [filteredTree, setFilteredTree] = useState([]);
+ 
 
 
   useEffect(() => {
@@ -32,6 +35,8 @@ function FolderTree() {
       // setFormattedPath(selectedItem.replace("\\", "/"));
     }
   }, [selectedItem]);
+
+ 
 
   // console.log(`${URL_USERS}` + formattedPath);
   const fetchFolders = async () => {
@@ -55,16 +60,30 @@ function FolderTree() {
     window.location.reload();
   };
 
-  const deleteItem = async (itemPath) => {
-    if (window.confirm(`"${itemPath}" ni o‘chirmoqchimisiz?`)) {
+
+  const deleteItem = async (item) => {
+    const filename = item.split("/").pop();
+    
+    if (window.confirm(`"${item}" ni o‘chirmoqchimisiz?`)) {
+    
       await axios.delete(`${URL_USERS}` + `delete-item/`, {
-        params: { item_path: itemPath },
+        params: { item_path: item , filename: filename},
       });
       fetchFolders();
     }
   };
+
+  // const deleteItem = async (itemPath) => {
+  //   if (window.confirm(`"${itemPath}" ni o‘chirmoqchimisiz?`)) {
+  //     await axios.delete(`${URL_USERS}` + `delete-item/`, {
+  //       params: { item_path: itemPath },
+  //     });
+  //     fetchFolders();
+  //   }
+  // };
   const handleClick = (item) => {
     setSelectedItem(item.path);
+    console.log(item.name)
   };
 
   const handleFileSelect = (event) => {
@@ -151,15 +170,7 @@ function FolderTree() {
 
     setFilteredTree(filterNodes(tree));
   };
-  const navigate = useNavigate();
-  const asosfile = selectedItem;
-  const Asosga = () =>{
-    const file = selectedItem
-    // console.log(file);
-    // navigate(`taskc/`);    
-    return file
-  }
-
+  
   return (
     <Container className="pdf">
       <Row>
@@ -176,10 +187,7 @@ function FolderTree() {
             <button onClick={addFolder} className="btn btn-info">
               📂 Yangi papka{" "}
             </button>{" "}
-            {/* <Link to={'/taskc'} className="btn btn-success" onClick={Asosga}>
-            Topshiriqqa qo'shish
-            </Link>
-                */}
+            
             
             {selectedFolder && <p>Tanlangan papka: {selectedFolder}</p>}
             {/* Fayl yuklash */}
@@ -302,4 +310,5 @@ function FolderTree() {
   );
 }
 
-export default FolderTree;
+
+export default OpenFolder;

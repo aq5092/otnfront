@@ -34,7 +34,7 @@ function ListTasks() {
       })
       .then((response) => {
         setUsers(response.data);
-        // console.log(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.log("error", error);
@@ -94,17 +94,15 @@ function ListTasks() {
         <thead>
           <tr>
             <th>User</th>
-            <th>Topshiriq turi</th>
-            <th>Asos</th>
-            <th>Buyruq raqami</th>
+            <th>Hujjat id</th>
+            <th>Hujjat turi</th>
+            <th>Buyruq pdf</th>
             <th>Sana</th>
             <th>Mazmuni</th>
             <th>Xodimlar soni</th>
             <th>Status</th>
             <th>Izoh</th>
-            <th>Link</th>
-            <th>Link_kimda</th>
-            {/* <th>Read</th> */}
+            <th>Asos</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -116,16 +114,16 @@ function ListTasks() {
             {user.tasks.map((task) => (
               <tr>
                 <td>{task.id}</td>
-                <td>{task.turi}</td>
-                <td>{task.asos}</td>
-                <td>{task.buyruq}</td>
+                <td>{task.hujjat_id}</td>
+                <td>{task.hujjat_turi}</td>
+                <td>{task.buyruq_pdf}</td>
                 <td>{task.created_at}</td>
                 <td>{task.mazmuni}</td>
                 <td>{task.xodim_soni}</td>
                 <td>{task.status}</td>
                 <td>{task.izoh}</td>
-                <td>{task.link}</td>
-                <td>{task.link_kimda}</td>
+                <td>{task.filename}</td>
+                
                 {/* <td>
                   <Link
                     to={`/tasks/${task.id}`}
@@ -157,6 +155,11 @@ function ListTasks() {
           </tbody>
         ))}
       </Table>
+      {/* {items.map((item) => (
+        <ul>
+          <li>{item.mazmuni}</li>
+        </ul>
+      ))} */}
     </div>
   );
 }
